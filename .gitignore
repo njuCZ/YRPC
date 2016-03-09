@@ -2,12 +2,18 @@
 
 # Mobile Tools for Java (J2ME)
 .mtj.tmp/
+*.DS_Store
 
-#eclipse
+# eclipse
 .classpath
 .project
 .settings/
 
+# IntelliJ project files
+.idea
+*.iml
+out
+gen
 
 # Package Files #
 *.jar
