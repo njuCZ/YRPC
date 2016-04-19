@@ -7,6 +7,7 @@ import java.lang.reflect.Proxy;
 import test.Plus;
 
 import com.njucz.yrpc.serializer.RequestContext;
+import com.njucz.yrpc.serializer.ResponseContext;
 
 public class ClientProxy implements InvocationHandler{
 	
@@ -31,12 +32,15 @@ public class ClientProxy implements InvocationHandler{
 //		System.out.println(data);
 //		tcpClient.sendMsg(data);
 		System.out.println("send obj success");
+		ResponseContext responseContext = tcpClient.readInputStream();
+		
 //		return method.invoke(proxy, args);
-		return null;
+		return responseContext.getObj();
 	}
 	
 	public static void main(String[] args){
 		Plus plus = new ClientProxy().proxy(Plus.class);
-		plus.add(1, 2);
+		int result = plus.add(1, 2);
+		System.out.println("receive result:"+result);
 	}
 }

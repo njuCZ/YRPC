@@ -10,6 +10,8 @@ import java.net.UnknownHostException;
 import com.njucz.yrpc.config.SystemProperties;
 import com.njucz.yrpc.serializer.RequestContext;
 import com.njucz.yrpc.serializer.RequestContextSerializer;
+import com.njucz.yrpc.serializer.ResponseContext;
+import com.njucz.yrpc.serializer.ResponseContextSerializer;
 
 public class TcpClient {
 	
@@ -46,14 +48,20 @@ public class TcpClient {
 		try {
 			OutputStream outputStream =client.getOutputStream();
 			RequestContextSerializer.encode(requestContext, outputStream);
-			outputStream.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
 	
-	public InputStream readInputStream() throws IOException{
-		return client.getInputStream();
+	public ResponseContext readInputStream() throws IOException{
+		ResponseContext responseContext = null;
+		try{
+			InputStream inputStream = client.getInputStream();
+			responseContext = ResponseContextSerializer.decode(inputStream);
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return responseContext;
 	}
 
 }

@@ -4,13 +4,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-public class RequestContextSerializer {
+public class ResponseContextSerializer {
 	
-	public static String encode(RequestContext requestContext,OutputStream outputStream){
+	public static String encode(ResponseContext responseContext,OutputStream outputStream){
 		StringBuilder sb = new StringBuilder();
 		byte[] data;
 		try {
-			data = SerializeUtils.serialize(requestContext);
+			data = SerializeUtils.serialize(responseContext);
 			int dataLength = data.length;
 			System.out.println("send length:" + dataLength);
 			outputStream.write(int2byteArray(dataLength));
@@ -21,7 +21,7 @@ public class RequestContextSerializer {
 		return sb.toString();
 	}
 	
-	public static RequestContext decode(InputStream inputStream){
+	public static ResponseContext decode(InputStream inputStream){
 		try {
 			byte[] size = new byte[4];
 			inputStream.read(size);
@@ -29,8 +29,8 @@ public class RequestContextSerializer {
 			System.out.println("receive length:" + dataLength);
 			byte[] data = new byte[dataLength];
 			inputStream.read(data);
-			RequestContext requestContext = (RequestContext)SerializeUtils.deserialize(data);
-			return requestContext;
+			ResponseContext responseContext = (ResponseContext)SerializeUtils.deserialize(data);
+			return responseContext;
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (Exception e) {

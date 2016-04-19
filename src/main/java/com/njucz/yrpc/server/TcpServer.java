@@ -2,6 +2,7 @@ package com.njucz.yrpc.server;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.lang.reflect.Method;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -10,6 +11,8 @@ import java.util.HashMap;
 import com.njucz.yrpc.config.SystemProperties;
 import com.njucz.yrpc.serializer.RequestContext;
 import com.njucz.yrpc.serializer.RequestContextSerializer;
+import com.njucz.yrpc.serializer.ResponseContext;
+import com.njucz.yrpc.serializer.ResponseContextSerializer;
 
 public class TcpServer {
 	
@@ -68,6 +71,9 @@ public class TcpServer {
 			Object result= func.invoke(obj, requestContext.getParameter());
 			
 			System.out.println(result);
+			ResponseContext responseContext = new ResponseContext(result.getClass(), result);
+			OutputStream outputStream = socket.getOutputStream();
+			ResponseContextSerializer.encode(responseContext, outputStream);
 		}
 	}
 	
