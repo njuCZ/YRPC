@@ -9,18 +9,18 @@ public class RequestContext implements Serializable {
 	 */
 	private static final long serialVersionUID = -4577226717216501841L;
 	
+	private String requestId;
 	private String className;
 	private String funcName;
 	private String[] parameterTypes;
 	private Object[] parameter;
-	
-	public RequestContext(String className, String funcName,
-			String[] parameterTypes, Object[] parameter) {
-		super();
-		this.className = className;
-		this.funcName = funcName;
-		this.parameterTypes = parameterTypes;
-		this.parameter = parameter;
+
+	public String getRequestId() {
+		return requestId;
+	}
+
+	public void setRequestId(String requestId) {
+		this.requestId = requestId;
 	}
 
 	public String getClassName() {

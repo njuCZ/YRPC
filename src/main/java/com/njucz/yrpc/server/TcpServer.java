@@ -28,7 +28,7 @@ public class TcpServer {
 			Object obj;
 			try {
 				obj = Class.forName(objClass).newInstance();
-				Class[] interfaces= obj.getClass().getInterfaces();
+				Class<?>[] interfaces= obj.getClass().getInterfaces();
 				for(int i =0;i<interfaces.length;i++){
 					objects.put(interfaces[i].getName(), obj);
 				}
@@ -55,25 +55,32 @@ public class TcpServer {
 		while (true)
 		{
 			Socket socket = server.accept();
-			InputStream inputStream = socket.getInputStream();
-			RequestContext requestContext = RequestContextSerializer.decode(inputStream);
-			
-			Object obj = objects.get(requestContext.getClassName());
-			
-			Class clazz = obj.getClass();
-			
-			String[] parameterTypeStrs = requestContext.getParameterTypes();
-			Class<?>[] parameterTypes = new Class<?>[parameterTypeStrs.length];
-			for(int i = 0 ; i < parameterTypeStrs.length; i ++){
-				parameterTypes[i] = getClass(parameterTypeStrs[i]);
-			}
-			Method func = clazz.getMethod(requestContext.getFuncName(), parameterTypes);
-			Object result= func.invoke(obj, requestContext.getParameter());
-			
-			System.out.println(result);
-			ResponseContext responseContext = new ResponseContext(result.getClass(), result);
-			OutputStream outputStream = socket.getOutputStream();
-			ResponseContextSerializer.encode(responseContext, outputStream);
+			new Thread(new ClientHandleSocket(socket)).start();
+			Thread.sleep(2000);
+//			InputStream inputStream = socket.getInputStream();
+//			RequestContext requestContext = RequestContextSerializer.decode(inputStream);
+//			
+//			Object obj = objects.get(requestContext.getClassName());
+//			
+//			Class<?> clazz = obj.getClass();
+//			
+//			String[] parameterTypeStrs = requestContext.getParameterTypes();
+//			Class<?>[] parameterTypes = new Class<?>[parameterTypeStrs.length];
+//			for(int i = 0 ; i < parameterTypeStrs.length; i ++){
+//				parameterTypes[i] = getClass(parameterTypeStrs[i]);
+//			}
+//			Method func = clazz.getMethod(requestContext.getFuncName(), parameterTypes);
+//			ResponseContext responseContext = new ResponseContext();
+//			responseContext.setRequestId(requestContext.getRequestId());
+//			try{
+//				Object result= func.invoke(obj, requestContext.getParameter());
+//				System.out.println(result);
+//				responseContext.setObj(result);
+//			}catch(Throwable t){
+//				responseContext.setError(t);
+//			}
+//			OutputStream outputStream = socket.getOutputStream();
+//			ResponseContextSerializer.encode(responseContext, outputStream);
 		}
 	}
 	
@@ -85,7 +92,7 @@ public class TcpServer {
 		}
 	}
 	
-	private Class<?> getClass(String str) throws ClassNotFoundException{
+	private static Class<?> getClass(String str) throws ClassNotFoundException{
 		if(str.equals("int")){
 			return int.class;
 		}else if(str.equals("long")){
@@ -105,4 +112,54 @@ public class TcpServer {
 		}
 		return Class.forName(str);
 	}
+	
+	
+	static class ClientHandleSocket implements Runnable{
+		
+		private Socket socket;
+		
+		public ClientHandleSocket(Socket socket){
+			this.socket = socket;
+		}
+
+		public void run() {
+			while(true){
+				try{
+					InputStream inputStream = socket.getInputStream();
+					RequestContext requestContext = RequestContextSerializer.decode(inputStream);
+					
+					Object obj = objects.get(requestContext.getClassName());
+					
+					Class<?> clazz = obj.getClass();
+					
+					String[] parameterTypeStrs = requestContext.getParameterTypes();
+					Class<?>[] parameterTypes = new Class<?>[parameterTypeStrs.length];
+					for(int i = 0 ; i < parameterTypeStrs.length; i ++){
+						parameterTypes[i] = TcpServer.getClass(parameterTypeStrs[i]);
+					}
+					Method func = clazz.getMethod(requestContext.getFuncName(), parameterTypes);
+					ResponseContext responseContext = new ResponseContext();
+					responseContext.setRequestId(requestContext.getRequestId());
+					try{
+						Object result= func.invoke(obj, requestContext.getParameter());
+						System.out.println(result);
+						responseContext.setObj(result);
+					}catch(Throwable t){
+						responseContext.setError(t);
+					}
+					OutputStream outputStream = socket.getOutputStream();
+					ResponseContextSerializer.encode(responseContext, outputStream);
+				} catch (Exception e){
+					e.printStackTrace();
+				} finally{
+					try {
+						Thread.sleep(2000);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+		}
+	}
 }
+

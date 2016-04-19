@@ -21,10 +21,12 @@ public class SystemProperties {
 	public static String getIpAddress(){
 		return properties.getProperty("tcp.ip");
 	}
+	
 	public static int getPort(){
 		String port = properties.getProperty("tcp.port");
 		return Integer.parseInt(port);
 	}
+	
 	public static String getProperties(String key){
 		return properties.getProperty(key);
 	}

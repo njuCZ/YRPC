@@ -8,27 +8,35 @@ public class ResponseContext implements Serializable{
 	 * 
 	 */
 	private static final long serialVersionUID = -8252051695816077280L;
-	private Class<?> clazz;
+	
+	private String requestId;
+	private Throwable error;
 	private Object obj;
 	
-	public ResponseContext(Class<?> clazz, Object obj) {
-		super();
-		this.clazz = clazz;
-		this.obj = obj;
+	public boolean isError(){
+		return error != null;
 	}
-
-	public Class<?> getClazz() {
-		return clazz;
+	
+	public String getRequestId() {
+		return requestId;
 	}
-
-	public void setClazz(Class<?> clazz) {
-		this.clazz = clazz;
+	
+	public void setRequestId(String requestId) {
+		this.requestId = requestId;
 	}
-
+	
+	public Throwable getError() {
+		return error;
+	}
+	
+	public void setError(Throwable error) {
+		this.error = error;
+	}
+	
 	public Object getObj() {
 		return obj;
 	}
-
+	
 	public void setObj(Object obj) {
 		this.obj = obj;
 	}
