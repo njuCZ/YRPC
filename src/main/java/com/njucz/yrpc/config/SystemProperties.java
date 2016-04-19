@@ -1,4 +1,4 @@
-package com.njucz.yrpc;
+package com.njucz.yrpc.config;
 
 import java.io.IOException;
 import java.io.InputStream;

@@ -7,7 +7,7 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
-import com.njucz.yrpc.SystemProperties;
+import com.njucz.yrpc.config.SystemProperties;
 import com.njucz.yrpc.serializer.RequestContext;
 import com.njucz.yrpc.serializer.RequestContextSerializer;
 

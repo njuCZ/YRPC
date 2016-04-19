@@ -7,7 +7,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.HashMap;
 
-import com.njucz.yrpc.SystemProperties;
+import com.njucz.yrpc.config.SystemProperties;
 import com.njucz.yrpc.serializer.RequestContext;
 import com.njucz.yrpc.serializer.RequestContextSerializer;
 
@@ -82,8 +82,21 @@ public class TcpServer {
 	private Class<?> getClass(String str) throws ClassNotFoundException{
 		if(str.equals("int")){
 			return int.class;
+		}else if(str.equals("long")){
+			return long.class;
+		}else if(str.equals("short")){
+			return short.class;
+		}else if(str.equals("byte")){
+			return byte.class;
+		}else if(str.equals("char")){
+			return char.class;
+		}else if(str.equals("double")){
+			return double.class;
+		}else if(str.equals("float")){
+			return float.class;
+		}else if(str.equals("boolean")){
+			return boolean.class;
 		}
 		return Class.forName(str);
-		
 	}
 }

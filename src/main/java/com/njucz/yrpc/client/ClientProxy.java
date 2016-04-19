@@ -1,4 +1,4 @@
-package com.njucz.yrpc;
+package com.njucz.yrpc.client;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -6,7 +6,6 @@ import java.lang.reflect.Proxy;
 
 import test.Plus;
 
-import com.njucz.yrpc.client.TcpClient;
 import com.njucz.yrpc.serializer.RequestContext;
 
 public class ClientProxy implements InvocationHandler{
